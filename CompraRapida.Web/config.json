@@ -1,0 +1,9 @@
+{
+  "ConnectionStrings": {
+    "SqlServer": "",
+    "CompraRapidaDB": "server=localhost;uid=root;pwd=Japa1908;database=CompraRapidaDB"
+
+  }
+
+}
+

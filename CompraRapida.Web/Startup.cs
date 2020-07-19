@@ -1,7 +1,11 @@
+using CompraRapida.Dominio.Contracts;
+using CompraRapida.Repositorio.Context;
+using CompraRapida.Repositorio.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,16 +14,29 @@ namespace CompraRapida.Web
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonFile("config.json", optional:false, reloadOnChange: true);
+            Configuration = builder.Build();
         }
 
-        public IConfiguration Configuration { get; }
+       
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration.GetConnectionString("CompraRapidaDB");
+            services.AddDbContext<CompraRapidaContexto>(option => 
+                                                        option.UseLazyLoadingProxies().UseMySql(connectionString, m => 
+                                                                        m.MigrationsAssembly("CompraRapida.Repositorio")));
+
+            services.AddScoped<IProdutoRepository, ProdutoRepository>();
+            services.AddScoped<IPedidoRepository, PedidoRepository>();
+            services.AddScoped<IUserRepository, UsuarioRepository>();
+           
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
