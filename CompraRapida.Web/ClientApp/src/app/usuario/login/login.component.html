@@ -31,15 +31,20 @@
            required
            />
     <div class="invalid-feedback mb-2" *ngIf="senha.invalid && (senha.dirty || senha.touched )">
+
+
       <div *ngIf="senha.errors.required">
         Senha nao informada
       </div>
     </div>
            
-    <button class="btn btn-primary btn-block mb-2" type="submit" (click)="entrar()" >Entrar</button>
+    <button class="btn btn-primary btn-block mb-2" type="submit" (click)="entrar()" [disabled]="ativar_spinner">
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" *ngIf="ativar_spinner"></span>
+      Entrar
+    </button>
     <img src="../../../assets/img/buy1.jpg" />
-    <div class="alert alert-primary" role="alert" *ngIf="usuarioAutenticado">
-      Usuario Autenticado !
+    <div class="alert alert-danger" *ngIf="mensagem">
+      {{mensagem}}
     </div>
   </form>
 </div>
